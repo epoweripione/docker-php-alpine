@@ -10,6 +10,8 @@ ENV TZ            Asia/Shanghai
 
 # Set timezone
 RUN set -ex && \
+    apk update && \
+    apk upgrade && \
     apk add --no-cache tzdata && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
@@ -96,7 +98,7 @@ RUN set -ex && \
     apk add --no-cache imagemagick-dev \
     libmemcached-dev \
     pcre-dev \
-    nghttp2-dev \
+    nghttp2-dev && \
     : && \
     printf "\n" | pecl install imagick memcached mongodb oauth psr redis swoole xdebug && \
     docker-php-ext-enable imagick memcached mongodb oauth psr redis swoole xdebug && \
