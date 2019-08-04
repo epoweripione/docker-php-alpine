@@ -21,12 +21,10 @@ RUN set -ex && \
 RUN set -ex && \
     apk add --no-cache autoconf \
     build-base \
-    bzip2 \
     curl \
     git \
     make \
     unzip \
-    wget \
     aspell-dev \
     bzip2-dev \
     curl-dev \
@@ -98,7 +96,6 @@ RUN set -ex && \
     apk add --no-cache imagemagick-dev \
     libmemcached-dev \
     pcre-dev \
-    nghttp2-dev && \
     : && \
     printf "\n" | pecl install imagick memcached mongodb oauth psr redis swoole xdebug && \
     docker-php-ext-enable imagick memcached mongodb oauth psr redis swoole xdebug && \
