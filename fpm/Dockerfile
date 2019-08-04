@@ -95,7 +95,7 @@ RUN set -ex && \
 RUN set -ex && \
     apk add --no-cache imagemagick-dev \
     libmemcached-dev \
-    pcre-dev \
+    pcre-dev && \
     : && \
     printf "\n" | pecl install imagick memcached mongodb oauth psr redis swoole xdebug && \
     docker-php-ext-enable imagick memcached mongodb oauth psr redis swoole xdebug && \
