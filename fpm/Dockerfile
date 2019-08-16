@@ -13,8 +13,10 @@ RUN set -ex && \
     apk update && \
     apk upgrade && \
     apk add --no-cache tzdata && \
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    # ln -snf /usr/share/zoneinfo/ /etc/localtime && \
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
+    apk del tzdata && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # Install extensions
