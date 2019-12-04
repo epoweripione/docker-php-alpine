@@ -38,6 +38,8 @@ RUN set -ex && \
     libbz2 \
     libjpeg-turbo-dev \
     libpng-dev \
+    libwebp-dev \
+    libxpm-dev \
     libstdc++ \
     libxml2-dev \
     libxslt-dev \
@@ -48,7 +50,8 @@ RUN set -ex && \
     openldap-dev \
     openssl-dev && \
     : && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-configure gd --with-webp-dir --with-jpeg-dir --with-png-dir \
+        --with-zlib-dir --with-xpm-dir --with-freetype-dir && \
     docker-php-ext-install gd && \
     : && \
     docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
