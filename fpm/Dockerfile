@@ -3,7 +3,7 @@ FROM php:7.3-fpm-alpine
 LABEL Maintainer="Ansley Leung" \
       Description="latest PHP7 fpm Docker image. Use `docker-php-ext-install extension_name` to install Extensions." \
       License="MIT License" \
-      Version="7.3.12"
+      Version="7.3.13"
 
 # Environments
 ENV TZ            Asia/Shanghai
@@ -20,6 +20,7 @@ RUN set -ex && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # Install extensions
+# ref to: https://github.com/mlocati/docker-php-extension-installer
 RUN set -ex && \
     apk add --no-cache autoconf \
     build-base \
