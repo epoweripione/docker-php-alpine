@@ -51,8 +51,7 @@ RUN set -ex && \
     openldap-dev \
     openssl-dev && \
     : && \
-    docker-php-ext-configure gd --with-webp-dir --with-jpeg-dir --with-png-dir \
-        --with-zlib-dir --with-xpm-dir --with-freetype-dir && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd && \
     : && \
     PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
