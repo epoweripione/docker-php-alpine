@@ -1,9 +1,9 @@
-FROM php:7.3-fpm-alpine
+FROM php:7.4-fpm-alpine
 
 LABEL Maintainer="Ansley Leung" \
       Description="latest PHP7 fpm Docker image. Use `docker-php-ext-install extension_name` to install Extensions." \
       License="MIT License" \
-      Version="7.3.17"
+      Version="7.4.5"
 
 # Environments
 ENV TZ            Asia/Shanghai
@@ -55,7 +55,7 @@ RUN set -ex && \
         --with-zlib-dir --with-xpm-dir --with-freetype-dir && \
     docker-php-ext-install gd && \
     : && \
-    docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
+    PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install imap && \
     : && \
     docker-php-ext-configure ldap --with-libdir=lib/ && \
@@ -116,7 +116,7 @@ RUN set -ex && \
     curl -L -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/920/PDFlib-9.2.0p5-Alpine-Linux-x86_64-php.tar.gz && \
     tar -xvf pdflib.tar.gz && \
     mv PDFlib-* pdflib && cd pdflib && \
-    cp bind/php/php-730-nts/php_pdflib.so $PHP_EXT_DIR && \
+    cp bind/php/php-740-nts/php_pdflib.so $PHP_EXT_DIR && \
     docker-php-ext-enable php_pdflib && \
     cd /tmp && \
     rm -rf /tmp/*
