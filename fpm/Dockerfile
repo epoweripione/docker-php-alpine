@@ -63,7 +63,7 @@ RUN set -ex && \
     docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install opcache && \
     : && \
-    docker-php-ext-configure zip --with-libzip && \
+    docker-php-ext-configure zip && \
     docker-php-ext-install zip && \
     : && \
     docker-php-ext-install bcmath bz2 exif gettext intl mysqli pcntl pdo_mysql pdo_pgsql pspell && \
