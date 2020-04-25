@@ -22,49 +22,48 @@ RUN set -ex && \
 # Install extensions
 # ref to: https://github.com/mlocati/docker-php-extension-installer
 RUN set -ex && \
-    apk add --no-cache autoconf \
-    build-base \
-    curl \
-    git \
-    grep \
-    make \
-    unzip \
-    aspell-dev \
-    bzip2-dev \
-    curl-dev \
-    freetype-dev \
-    gettext-dev \
-    icu-dev \
-    imap-dev \
-    krb5-dev \
-    recode-dev \
-    libbz2 \
-    libgcrypt-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libsodium-dev \
-    libstdc++ \
-    libwebp-dev \
-    libxpm-dev \
-    libxml2-dev \
-    libxslt-dev \
-    libzip-dev \
-    mysql-dev \
-    net-snmp-dev \
-    oniguruma-dev \
-    openldap-dev \
-    openssh-client \
-    openssl-dev \
-    postgresql-client \
-    postgresql-dev \
-    sqlite-dev \
-    && \
-    docker-php-ext-configure gd --enable-gd-native-ttf --with-freetype --with-jpeg && \
+    apk add --no-cache \
+        autoconf \
+        build-base \
+        curl \
+        git \
+        grep \
+        make \
+        unzip \
+        aspell-dev \
+        bzip2-dev \
+        curl-dev \
+        freetype-dev \
+        gettext-dev \
+        icu-dev \
+        imap-dev \
+        krb5-dev \
+        recode-dev \
+        libbz2 \
+        libgcrypt-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        libsodium-dev \
+        libstdc++ \
+        libwebp-dev \
+        libxpm-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libzip-dev \
+        mysql-dev \
+        net-snmp-dev \
+        oniguruma-dev \
+        openldap-dev \
+        openssh-client \
+        openssl-dev \
+        postgresql-client \
+        postgresql-dev \
+        sqlite-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
     PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-configure ldap --with-libdir=lib/ && \
     docker-php-ext-configure opcache --enable-opcache && \
-    docker-php-ext-configure zip \
-    && \
+    docker-php-ext-configure zip && \
     docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
         bcmath \
         bz2 \
@@ -96,8 +95,7 @@ RUN set -ex && \
         sysvshm \
         xml \
         xsl \
-        zip \
-    && \
+        zip && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # Set recommended opcache settings
