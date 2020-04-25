@@ -26,6 +26,7 @@ RUN set -ex && \
     build-base \
     curl \
     git \
+    grep \
     make \
     unzip \
     aspell-dev \
@@ -36,39 +37,66 @@ RUN set -ex && \
     icu-dev \
     imap-dev \
     krb5-dev \
+    recode-dev \
     libbz2 \
+    libgcrypt-dev \
     libjpeg-turbo-dev \
     libpng-dev \
+    libsodium-dev \
+    libstdc++ \
     libwebp-dev \
     libxpm-dev \
-    libstdc++ \
     libxml2-dev \
     libxslt-dev \
     libzip-dev \
     mysql-dev \
     net-snmp-dev \
-    postgresql-dev \
+    oniguruma-dev \
     openldap-dev \
-    openssl-dev && \
+    openssh-client \
+    openssl-dev \
+    postgresql-client \
+    postgresql-dev \
+    sqlite-dev \
     : && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd && \
-    : && \
+    docker-php-ext-configure gd --enable-gd-native-ttf --with-freetype --with-jpeg && \
     PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-install imap && \
-    : && \
     docker-php-ext-configure ldap --with-libdir=lib/ && \
-    docker-php-ext-install ldap && \
-    : && \
     docker-php-ext-configure opcache --enable-opcache && \
-    docker-php-ext-install opcache && \
+    docker-php-ext-configure zip \
     : && \
-    docker-php-ext-configure zip && \
-    docker-php-ext-install zip && \
-    : && \
-    docker-php-ext-install bcmath bz2 exif gettext intl mysqli pcntl pdo_mysql pdo_pgsql pspell && \
-    : && \
-    docker-php-ext-install shmop snmp soap sockets sysvmsg sysvsem sysvshm wddx xsl && \
+    docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+        bcmath \
+        bz2 \
+        curl \
+        exif \
+        gd \
+        gettext \
+        iconv \
+        imap \
+        intl \
+        json \
+        ldap \
+        mbstring \
+        mysqli \
+        opcache \
+        pcntl \
+        pdo \
+        pdo_mysql \
+        pdo_pgsql \
+        pdo_sqlite \
+        pspell \
+        shmop \
+        simplexml \
+        snmp \
+        soap \
+        sockets \
+        sysvmsg \
+        sysvsem \
+        sysvshm \
+        xml \
+        xsl \
+        zip \
     : && \
     rm -rf /tmp/* /var/cache/apk/*
 
