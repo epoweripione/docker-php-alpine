@@ -58,13 +58,13 @@ RUN set -ex && \
     postgresql-client \
     postgresql-dev \
     sqlite-dev \
-    : && \
+    && \
     docker-php-ext-configure gd --enable-gd-native-ttf --with-freetype --with-jpeg && \
     PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-configure ldap --with-libdir=lib/ && \
     docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-configure zip \
-    : && \
+    && \
     docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
         bcmath \
         bz2 \
@@ -97,7 +97,7 @@ RUN set -ex && \
         xml \
         xsl \
         zip \
-    : && \
+    && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # Set recommended opcache settings
