@@ -8,6 +8,9 @@ LABEL Maintainer="Ansley Leung" \
 # Environments
 ENV TZ            Asia/Shanghai
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_HOME=/usr/local/share/composer
+
 # Set timezone
 RUN set -ex && \
     apk update && \
@@ -98,50 +101,46 @@ RUN set -ex && \
         zip && \
     rm -rf /tmp/* /var/cache/apk/*
 
-# Set recommended opcache settings
-# https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-            echo 'opcache.memory_consumption=128'; \
-            echo 'opcache.interned_strings_buffer=8'; \
-            echo 'opcache.max_accelerated_files=4000'; \
-            echo 'opcache.revalidate_freq=60'; \
-            echo 'opcache.fast_shutdown=1'; \
-            echo 'opcache.enable_cli=1'; \
-            echo 'opcache.file_cache=/tmp'; \
-        } > $PHP_INI_DIR/conf.d/opcache-recommended.ini
-
-# remove PHP version from the X-Powered-By HTTP header
-# test: curl -I -H "Accept-Encoding: gzip, deflate" https://www.yourdomain.com
-RUN echo 'expose_php = off' > $PHP_INI_DIR/conf.d/hide-header-version.ini
-
-# Composer
 RUN set -ex && \
+    ## Composer
     mkdir -p /usr/local/share/composer && \
-    export COMPOSER_ALLOW_SUPERUSER=1 && \
-    export COMPOSER_HOME=/usr/local/share/composer && \
-    curl -sS https://install.phpcomposer.com/installer | php -- --install-dir=/usr/bin/ --filename=composer
-
-# Install extension using pecl
-# pecl install xdebug-beta
-RUN set -ex && \
-    apk add --no-cache imagemagick-dev \
-    libmemcached-dev \
-    pcre-dev && \
-    : && \
-    printf "\n" | pecl install imagick memcached mongodb oauth psr redis swoole xdebug && \
-    docker-php-ext-enable imagick memcached mongodb oauth psr redis swoole xdebug && \
-    : && \
-    rm -rf /tmp/* /var/cache/apk/*
-
-# PDFlib
-# https://www.pdflib.com/download/pdflib-product-family/
-RUN set -ex && \
-    cd /tmp && \
-    export PHP_EXT_DIR=$(php-config --extension-dir) && \
-    curl -L -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/930/PDFlib-9.3.0-Alpine-Linux-x86_64-php.tar.gz && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer && \
+    ## PDFlib
+    ## https://www.pdflib.com/download/pdflib-product-family/
+    PHP_EXT_DIR=$(php-config --extension-dir) && \
+    curl -fSL -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/930/PDFlib-9.3.0p5-Alpine-Linux-x86_64-php.tar.gz && \
     tar -xvf pdflib.tar.gz && \
-    mv PDFlib-* pdflib && cd pdflib && \
-    cp bind/php/php-740-nts/php_pdflib.so $PHP_EXT_DIR && \
+    mv PDFlib-* pdflib && \
+    cp pdflib/bind/php/php-800-nts/php_pdflib.so $PHP_EXT_DIR && \
     docker-php-ext-enable php_pdflib && \
-    cd /tmp && \
-    rm -rf /tmp/*
+    rm pdflib.tar.gz && \
+    rm -r pdflib && \
+    : && \
+    PHP_INI_DIR=$(php --ini | grep "Scan for additional .ini files in" | cut -d':' -f2 | cut -d' ' -f2 | head -n1) && \
+    ## php runtime environments
+    # { \
+    # echo "memory_limit = ${PHP_MEMORY_LIMIT}"; \
+    # echo "upload_max_filesize = ${MAX_UPLOAD}"; \
+    # echo "max_file_uploads = ${PHP_MAX_FILE_UPLOAD}"; \
+    # echo "post_max_size = ${PHP_MAX_POST}"; \
+    # echo "cgi.fix_pathinfo= 0"; \
+    # } > $PHP_INI_DIR/zz-php-env.ini && \
+    : && \
+    ## timezone
+    echo "date.timezone = ${TZ}" > $PHP_INI_DIR/zz-timezone.ini && \
+    : && \
+    ## recommended opcache settings
+    ## https://secure.php.net/manual/en/opcache.installation.php
+    { \
+    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=4000'; \
+    echo 'opcache.revalidate_freq=60'; \
+    echo 'opcache.fast_shutdown=1'; \
+    echo 'opcache.enable_cli=1'; \
+    echo 'opcache.file_cache=/tmp'; \
+    } > $PHP_INI_DIR/zz-opcache-recommended.ini && \
+    : && \
+    ## remove PHP version from the X-Powered-By HTTP header
+    ## test: curl -I -H "Accept-Encoding: gzip, deflate" https://www.yourdomain.com
+    echo 'expose_php = off' > $PHP_INI_DIR/zz-hide-header-version.ini
