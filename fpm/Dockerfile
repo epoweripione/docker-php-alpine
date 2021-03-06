@@ -111,7 +111,7 @@ RUN set -ex && \
     curl -fSL -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/930/PDFlib-9.3.0p5-Alpine-Linux-x86_64-php.tar.gz && \
     tar -xvf pdflib.tar.gz && \
     mv PDFlib-* pdflib && \
-    cp pdflib/bind/php/php-800-nts/php_pdflib.so $PHP_EXT_DIR && \
+    cp pdflib/bind/php/php-740-nts/php_pdflib.so $PHP_EXT_DIR && \
     docker-php-ext-enable php_pdflib && \
     rm pdflib.tar.gz && \
     rm -r pdflib && \
