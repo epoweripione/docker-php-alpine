@@ -24,94 +24,77 @@ RUN set -ex && \
 
 # Install extensions
 # ref to: https://github.com/mlocati/docker-php-extension-installer
-RUN set -ex && \
-    apk add --no-cache \
-        autoconf \
-        build-base \
-        curl \
-        git \
-        grep \
-        make \
-        unzip \
-        aspell-dev \
-        bzip2-dev \
-        curl-dev \
-        freetype-dev \
-        gettext-dev \
-        icu-dev \
-        imap-dev \
-        krb5-dev \
-        recode-dev \
-        libbz2 \
-        libgcrypt-dev \
-        libjpeg-turbo-dev \
-        libpng-dev \
-        libsodium-dev \
-        libstdc++ \
-        libwebp-dev \
-        libxpm-dev \
-        libxml2-dev \
-        libxslt-dev \
-        libzip-dev \
-        mysql-dev \
-        net-snmp-dev \
-        oniguruma-dev \
-        openldap-dev \
-        openssh-client \
-        openssl-dev \
-        postgresql-client \
-        postgresql-dev \
-        sqlite-dev && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    PHP_OPENSSL=yes docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-configure ldap --with-libdir=lib/ && \
-    docker-php-ext-configure opcache --enable-opcache && \
-    docker-php-ext-configure zip && \
-    docker-php-ext-install -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions \
         bcmath \
         bz2 \
-        curl \
+        calendar \
+        csv \
+        decimal \
         exif \
         gd \
+        geospatial \
         gettext \
-        iconv \
+        gmp \
+        gnupg \
+        grpc \
+        igbinary \
+        imagick \
         imap \
         intl \
-        json \
+        json_post \
         ldap \
-        mbstring \
+        mailparse \
+        memcache \
+        memcached \
+        mongodb \
+        msgpack \
         mysqli \
+        oauth \
         opcache \
         pcntl \
-        pdo \
+        pdo_dblib \
         pdo_mysql \
         pdo_pgsql \
-        pdo_sqlite \
+        pgsql \
         pspell \
-        shmop \
-        simplexml \
+        redis \
+        smbclient \
         snmp \
         soap \
         sockets \
+        ssh2 \
+        swoole \
         sysvmsg \
         sysvsem \
         sysvshm \
-        xml \
+        tidy \
+        timezonedb \
+        uuid \
+        xdebug \
+        xhprof \
+        xlswriter \
         xsl \
-        zip && \
+        yaml \
+        yar \
+        zip \
+        zstd \
+    && \
+    install-php-extensions @composer && \
+    : && \
     rm -rf /tmp/* /var/cache/apk/*
 
 RUN set -ex && \
-    ## Composer
-    mkdir -p /usr/local/share/composer && \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer && \
     ## PDFlib
     ## https://www.pdflib.com/download/pdflib-product-family/
-    PHP_EXT_DIR=$(php-config --extension-dir) && \
     curl -fSL -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/930/PDFlib-9.3.0p5-Alpine-Linux-x86_64-php.tar.gz && \
-    tar -xvf pdflib.tar.gz && \
+    tar -xzf pdflib.tar.gz && \
     mv PDFlib-* pdflib && \
-    cp pdflib/bind/php/php-740-nts/php_pdflib.so $PHP_EXT_DIR && \
+    PHP_EXT_DIR=$(php-config --extension-dir) && \
+    PHP_MAIN_VERSION=$(php --version | grep -Eo '([0-9]{1,}\.)+[0-9]{1,}' | head -n1 | cut -d. -f1-2 | sed 's/\.//g') && \
+    cp pdflib/bind/php/php-${PHP_MAIN_VERSION}0-nts/php_pdflib.so $PHP_EXT_DIR && \
     docker-php-ext-enable php_pdflib && \
     rm pdflib.tar.gz && \
     rm -r pdflib && \
