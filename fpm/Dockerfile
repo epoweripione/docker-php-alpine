@@ -3,7 +3,7 @@ FROM php:7.4-fpm-alpine
 LABEL Maintainer="Ansley Leung" \
       Description="latest PHP7 fpm Docker image. Use `docker-php-ext-install extension_name` to install Extensions." \
       License="MIT License" \
-      Version="7.4.16"
+      Version="7.4.19"
 
 # Environments
 ENV TZ            Asia/Shanghai
@@ -89,7 +89,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
 RUN set -ex && \
     ## PDFlib
     ## https://www.pdflib.com/download/pdflib-product-family/
-    curl -fSL -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/930/PDFlib-9.3.0p5-Alpine-Linux-x86_64-php.tar.gz && \
+    curl -fSL -o pdflib.tar.gz https://www.pdflib.com/binaries/PDFlib/931/PDFlib-9.3.1-Alpine-Linux-x64-php.tar.gz && \
     tar -xzf pdflib.tar.gz && \
     mv PDFlib-* pdflib && \
     PHP_EXT_DIR=$(php-config --extension-dir) && \
