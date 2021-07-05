@@ -3,7 +3,7 @@ FROM php:7.4-fpm-alpine
 LABEL Maintainer="Ansley Leung" \
       Description="latest PHP7 fpm Docker image. Use `docker-php-ext-install extension_name` to install Extensions." \
       License="MIT License" \
-      Version="8.0.7"
+      Version="8.0.8"
 
 # Environments
 ENV TZ            Asia/Shanghai
